@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  django:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+      - celery
+    networks:
+      - mynetwork
+    
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: sushifbase
+      POSTGRES_USER: db_admin
+      POSTGRES_PASSWORD: db_passw
+    networks:
+      - mynetwork
+      
+
+  redis:
+    image: "redis:alpine"
+    container_name: docker-redis-sfeast
+    networks:
+      - mynetwork
+
+  celery:
+    build: .
+    command: celery -A sfeast worker -l info 
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:

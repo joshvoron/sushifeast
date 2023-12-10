@@ -1,0 +1,124 @@
+.menu-link {
+    color: white;
+}
+
+.text {
+    text-decoration: none;
+}
+
+.custom-dropdown {
+    background-color: white; /* Белый фон */
+}
+
+.custom-dropdown-item {
+    color: black !important; /* Черный текст */
+}
+
+.main-carousel {
+    border-radius: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.product-card {
+    border-radius: 2rem;
+    margin-top: 1rem;
+    margin-right: 1.35rem;
+    margin-left: 1.35rem;
+}
+
+.red-buttn {
+    background-color: brown;
+    color: white;
+    border-radius: 2rem;
+    border: 0;
+}
+
+.white-buttn {
+    background-color: rgba(224, 224, 224, 0.623);
+    color: rgba(165, 42, 42, 0.733);
+}
+
+/* custom-styles.css */
+
+.bg-brown {
+    background-color: brown !important;
+}
+
+.my-br-2 {
+    border-radius: 2rem;
+}
+
+.my-txt-sm {
+    font-size: 0.8rem;
+}
+
+.basket-button {
+    background-color: #e0e0e0;
+    border-radius: 10rem;
+    position: fixed;
+    top: 90%;
+    left: 95%;
+}
+
+.basket-counter {
+    position: static;
+    top: 0%;
+    margin-left: .3rem;
+    font-size: .8rem;
+    text-decoration: none;
+    color: black;
+}
+
+.my-alert {
+    position: fixed;
+    top: 90%;
+    width: 30%;
+    display: none;
+}
+
+.my-card-header {
+    background-color: white;
+    border-top-left-radius: 5rem;
+    border-top-right-radius: 5rem;
+}
+
+.new {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-size: .8rem;
+    background-color: rgb(241, 71, 4);
+    border-radius: 10px;
+    position: absolute;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    top: .5rem;
+    left: .5rem;
+}
+
+.hit {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-size: .8rem;
+    background-color: rgb(146, 4, 241);
+    border-radius: 10px;
+    position: absolute;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    top: .5rem;
+    left: 10rem;
+}
+
+.old-price {
+    text-decoration: none;
+    color: rgb(146, 146, 146);
+    text-decoration: line-through;
+    font-size: .8rem;
+    position: absolute;
+    bottom: 2rem;
+}
+
+.price {
+    font-weight: 600;
+    font-size: 1.35rem;
+}

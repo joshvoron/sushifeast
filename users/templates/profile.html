@@ -1,0 +1,96 @@
+{% extends 'usersbase.html' %}
+
+{% block head %}
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- OpenCage Geocoding JavaScript -->
+  <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js"></script>
+
+
+{% endblock %}
+<!-- Profile - start -->
+{% block content %}
+
+        {% if user.email_verification == False %}
+          <div class="alert alert-danger col-6 mx-auto my-br-2 m-1" role="alert">
+            Мы отправили вам письмо с подтверждением почты. Подтвердите её, пожалуйста!
+          </div>
+        {% endif %}
+
+  <div class="card col-6 mx-auto mt-3" style="border-radius: 2rem;">
+    <div class="card-header d-flex align-items-center justify-content-between">Ваш профиль<a href="{% url 'users:profile-edit' %}"><i
+          class="bi bi-pencil-fill"></i></a></div>
+
+    <div class="card-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-6">
+            <div class="h5">{{ user.first_name }} {{ user.last_name }}</div>
+            <div class="h6">+7 {{ user.username }}</div>
+            <div style="font-size: 1.1rem;">{{ user.email }}</div>
+            <a href="{% url 'users:changepassword' %}" style="font-size: 1rem;">Желаете сменить пароль?</a>
+            {% if user.apartment %}
+              <div class="row mt-1">
+                <div class="col-6">
+                  <label for="inputPassword" style="font-size: .7rem;">Подъезд:</label>
+                  <input type="text" value="{% if user.entrance %} {{ user.entrance }} {% endif %}" disabled class="form-control" id="inputPassword2"></div>
+                <div class="col-6">
+                  <label for="inputPassword" style="font-size: .7rem;">Этаж:</label>
+                  <input type="text" value="{% if user.floor %} {{ user.floor }} {% endif %}" disabled class="form-control" id="inputPassword2"></div>
+              </div>
+              <div class="row mt-1">
+                <div class="col-6">
+                  <label for="inputPassword" style="font-size: .7rem;">Квартира:</label>
+                  <input type="text" class="form-control" disabled value="{% if user.apartment %} {{ user.apartment }} {% endif %}" id="inputPassword2"></div>
+                <div class="col-6">
+                  <label for="inputPassword" style="font-size: .7rem;">Корпус/строение:</label>
+                  <input type="text" value="{% if user.building %} {{ user.building }} {% endif %}" disabled class="form-control" id="inputPassword2"></div>
+              </div>
+            {% endif %}
+
+          </div>
+          <div class="col-6">
+            <div class="h5">Ваш адрес:</div>
+            {% if user.longitude %}
+              <div id="map" style="height: 15rem;border-radius: 2rem;"></div>
+            {% else %}
+              <div class="h6">Ваш адрес нам ещё неизвестен!
+                Давайте исправим это?)
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+{% endblock %}
+<!-- Profile - end -->
+
+{% block bodyscript %}
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          var map = L.map('map').setView([55.7558, 37.6176], 13);
+
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+              attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          }).addTo(map);
+
+          var latitude = {{ user.latitude }};
+          var longitude = {{ user.longitude }};
+          var userAddress = "{{ user.address }}";
+
+          if (latitude && longitude) {
+              var marker = L.marker([latitude, longitude]).addTo(map);
+              marker.bindPopup(userAddress).openPopup();
+              map.setView([latitude, longitude], 13);
+          }
+      });
+  </script>
+
+{% endblock %}

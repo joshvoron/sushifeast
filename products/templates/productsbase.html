@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sushifeast - суши и роллы для всех!</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+
+<body>
+<!-- Navbar - start -->
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: brown;">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'products:main' %}">sushifeast</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link" aria-current="page" href="{% url 'products:main' %}">Главная</a>
+        <a class="nav-link {% if category.id == 1 %}
+          	active
+          {% endif %}  " href="{% url 'products:products' 1 %}">Роллы</a>
+        <a class="nav-link {% if category.id == 2 %}
+          	active
+          {% endif %} " href="{% url 'products:products' 2 %}">Суши</a>
+        <a class="nav-link {% if category.id == 3 %}
+          	active
+          {% endif %}" href="{% url 'products:products' 3 %}">Пицца</a>
+        <a class="nav-link{% if category.id == 4 %}
+          	active
+          {% endif %}" href="{% url 'products:products' 4 %}">Wok</a>
+        <a class="nav-link {% if category.id == 5 %}
+          	active
+          {% endif %}" href="{% url 'products:products' 5 %}">Закуски</a>
+        <a class="nav-link {% if category.id == 6 %}
+          	active
+          {% endif %}" href="{% url 'products:products' 6 %}">Салаты</a>
+        <a class="nav-link{% if category.id == 7 %}
+          	active
+          {% endif %}" href="{% url 'products:products' 7 %}">Напитки</a>
+      </div>
+    </div>
+
+    {% if user.is_authenticated %}
+      <span class="navbar-text">
+        <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <button class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 2rem;">
+                                {% if user.first_name %}
+                                  {{ user.first_name }} {{ user.last_name }}
+                                {% else %}
+                                  +7 {{ user.username }}
+                                {% endif %}
+              </button>
+              <ul class="dropdown-menu custom-dropdown">
+                <li><a class="dropdown-item custom-dropdown-item" href="{% url 'users:profile' %}">Мой профиль</a></li>
+                <li><a class="dropdown-item custom-dropdown-item" href="{% url 'users:basket' %}">Моя корзина</a></li>
+                <li><a class="dropdown-item custom-dropdown-item" href="{% url 'users:all-baskets' %}">Мои заказы</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item custom-dropdown-item" href="{% url 'users:logout' %}">Выйти</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </span>
+    {% else %}
+      <a href="{% url 'users:login' %}" class="mt-2 mb-2 btn btn-outline-light my-br-2">
+        Войти
+      </a>
+    {% endif %}
+  </div>
+</nav>
+<!-- Navbar - end -->
+{% block content %}
+
+{% endblock %}
+<div class="alert alert-success my-alert" role="alert">
+  Успешно добавлено в корзину
+</div>
+<a href="{% url 'users:basket' %}" class="text-decoration-none text-dark">
+  <div class="btn basket-button"><i class="bi bi-basket" style="font-size: 1.4rem;"></i><a id="cart-counter" class="basket-counter">{{ counter }}</a>
+  </div>
+</a>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    var maxHeight = 0;
+    $('.product-card').each(function () {
+        var cardHeight = $(this).height();
+        if (cardHeight > maxHeight) {
+            maxHeight = cardHeight;
+        }
+    });
+
+    $('.product-card').height(maxHeight);
+</script>
+<script>
+    $(document).ready(function () {
+        function showAlert() {
+            var alertElement = $('.my-alert');
+            alertElement.fadeIn(300, function () {
+                setTimeout(function () {
+                    hideAlert(alertElement);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 100);
+                }, 300);
+            });
+        }
+
+        function hideAlert(element) {
+            element.fadeOut(400);
+        }
+
+        $('.add-to-basket-btn').on('click', function () {
+            var product_id = $(this).data('product-id');
+            var quantity = $('#quantityInput' + product_id).val();
+
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'products:add_to_basket' %}',
+                data: {
+                    'product_id': product_id,
+                    'quantity': quantity,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    if (response.success) {
+                        showAlert();
+                    } else {
+                        location.replace('{% url 'users:login' %}')
+                    }
+                },
+                error: function () {
+                    alert('Ошибка при отправке запроса.');
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    function addToCart(objectId) {
+        var input = document.getElementById('quantityInput' + objectId);
+        var quantity = parseFloat(input.value) || 1;
+        var priceElement = document.getElementById('price' + objectId);
+        var price = parseFloat(priceElement.dataset.price);
+    }
+
+    function decrementValue(objectId) {
+        var input = document.getElementById('quantityInput' + objectId);
+        var value = parseFloat(input.value) || 1;
+        value = Math.max(value - 1, 1);
+        input.value = value;
+        updatePrice(objectId);
+    }
+
+    function incrementValue(objectId) {
+        var input = document.getElementById('quantityInput' + objectId);
+        var value = parseFloat(input.value) || 0;
+        value++;
+        input.value = Math.min(value, 9);
+        updatePrice(objectId);
+    }
+
+    function updatePrice(objectId) {
+        var input = document.getElementById('quantityInput' + objectId);
+        var priceElement = document.getElementById('price' + objectId);
+        var price = parseFloat(input.value) * parseFloat(priceElement.dataset.price);
+        priceElement.innerHTML = '<b>' + price.toFixed(1) + '</b>₽';
+    }
+
+</script>
+
+
+{% block scripts %}
+
+{% endblock %}
+</html>

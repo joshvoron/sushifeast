@@ -1,0 +1,80 @@
+{% extends 'usersbase.html' %}
+{% load static %}
+
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="card col-6 mx-auto mt-3" style="border-radius: 2rem;">
+        <div style="    background-color: white;
+    border-top-left-radius: 5rem;
+    border-top-right-radius: 5rem;"
+             class=" card-header d-flex align-items-center justify-content-between my-card-header">Корзина<a
+              href="{% url 'users:basket_remove' basketmodel.id %}"><i style="color: brown"
+                                                                       class="bi bi-trash"></i></a></div>
+
+        <div class="card-body">
+          <div class="container">
+
+            <!-- Order - start -->
+            {% if items %}
+              {% for item in items %}
+                <div class="row mt-1">
+                  <div>
+                    <div class="h5 row">
+                      <div class="col-6"><a>{{ item.product }}</a></div>
+                      <div class="col-6" style="text-align:right"><a>{{ item.quantity }} x {{ item.product.price }}
+                        ₽ = {{ item.price }} ₽
+                      </a></div>
+                    </div>
+                    {{ item.product.composition }}
+                  </div>
+                </div>
+                <hr class="hr"/>
+              {% endfor %}
+            {% else %}
+              <div class="h3" style="text-align: center; color: rgb(128,128,128)">-- Ваша корзина пуста --</div>
+            {% endif %}
+            <!-- Order - end -->
+
+          </div>
+        </div>
+        <!-- Profile - end -->
+      </div>
+      <div class="card col-3 mx-auto mt-3" style="border-radius: 2rem;">
+        <div class="card-header d-flex align-items-center justify-content-between">Детали</div>
+
+        <div class="card-body">
+          <div class="container">
+
+            <!-- Order - start -->
+            <div class="row mt-1">
+              <div>
+                <div class="h3 row">
+                  <div class="col-6"><a>Итого</a></div>
+                  <div class="col-6" style="text-align:right"><a>{{ basketmodel.total_price }} ₽</a></div>
+                </div>
+                <div class="h6 m-0 p-0">Адрес Доставки:</div>
+                <a>{{ user.address }}</a>
+              </div>
+            </div>
+            <hr class="hr"/>
+            <div class="h6 m-0 p-0">Заказчик:</div>
+            <div>{{ user.first_name }} {{ user.last_name }}</div>
+            <hr class="hr">
+            {% if user.address and basketmodel.total_quantity > 0 %}
+              <a href="{% url 'users:basket-pay' %}">
+                <div class="btn col-12 red-buttn">Оплатить</div>
+              </a>
+            {% elif basketmodel.total_quantity == 0  %}
+              <div class="btn disabled col-12 red-buttn">Оплатить</div>
+            {% else %}
+              <div class="btn disabled col-12 red-buttn">Сначала  укажите адрес в профиле</div>
+            {% endif %}
+          </div>
+        </div>
+        <!-- Profile - end -->
+      </div>
+    </div>
+  </div>
+{% endblock %}
