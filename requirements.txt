@@ -28,7 +28,7 @@ kombu==5.3.4
 mccabe==0.7.0
 packaging==23.2
 pefile==2023.2.7
-Pillow==10.1.0
+Pillow==10.2.0
 prompt-toolkit==3.0.41
 psycopg2==2.9.9
 pycodestyle==2.11.1
